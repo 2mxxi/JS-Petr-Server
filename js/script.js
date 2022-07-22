@@ -164,7 +164,7 @@ window.addEventListener("DOMContentLoaded", function(){
       this.usdRurcourse = 60;
       this.currencyConvert();
       this.classes = classes;
-      this.parent = document.querySelector(parentSelector);      
+      this.parent = document.querySelector(parentSelector);
     }
     // addCard(){
     // menuContainer.insertAdjacentHTML('afterbegin', `<div class="menu__item ${this.classes}"><img src="${this.img}" alt="${this.alttext}"><h3 class="menu__item-subtitle">${this.heading}</h3><div class="menu__item-descr">${this.text}</div><div class="menu__item-divider"></div><div class="menu__item-price"><div class="menu__item-cost">Цена:</div><div class="menu__item-total"><span>${this.price}</span> руб./день</div></div></div>`);
@@ -197,9 +197,49 @@ window.addEventListener("DOMContentLoaded", function(){
 
   // или
 
-  new Card('img/tabs/post.jpg', 'Меню Постное', 'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.', 'Меню Постное', 8, '.menu .container', 'menu__item').addCard()
-  new Card('img/tabs/elite.jpg', 'Меню “Премиум“', 'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!', 'Меню Премиум', 10,'.menu .container', 'menu__item').addCard()
-  new Card('img/tabs/vegy.jpg', 'Меню “Фитнес“', 'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!','Меню Фитнес', 6, '.menu .container', 'menu__item').addCard()
+  const getResource = async (url) => {
+    const res = await fetch(url);
+
+    if(!res.ok){
+      throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+    }
+
+    return await res.json();
+  }
+
+  // 1 вариант с шаблонизацией
+  // getResource('http://localhost:3000/menu')
+  //   .then(data => {
+      // data.forEach(({img, altimg, title, descr, price}) => {
+      //   new Card(img, title, descr, altimg, price, '.menu .container').addCard();
+      // })
+  //   })
+
+  axios.get('http://localhost:3000/menu')
+    .then(data => {
+      data.data.forEach(({img, altimg, title, descr, price}) => {
+        new Card(img, title, descr, altimg, price, '.menu .container').addCard();
+      })
+    })
+
+  // 2 вариант (если нужно построить элементы на странице 1 раз)
+  // getResource('http://localhost:3000/menu')
+  //   .then(data => createCard(data));
+
+  // function createCard(data) {
+  //   data.forEach(({img, altimg, title, descr, price}) => {
+  //     const element = document.createElement('div');
+
+  //     element.classList.add('menu__item');
+
+  //     element.innerHTML = `<img src="${img}" alt="${altimg}"><h3 class="menu__item-subtitle">${title}</h3><div class="menu__item-descr">${descr}</div><div class="menu__item-divider"></div><div class="menu__item-price"><div class="menu__item-cost">Цена:</div><div class="menu__item-total"><span>${price}</span> руб./день</div></div>`;
+  //     document.querySelector('.menu .container').append(element);
+  //   })
+  // }
+
+  // new Card('img/tabs/post.jpg', 'Меню Постное', 'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.', 'Меню Постное', 8, '.menu .container', 'menu__item').addCard()
+  // new Card('img/tabs/elite.jpg', 'Меню “Премиум“', 'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!', 'Меню Премиум', 10,'.menu .container', 'menu__item').addCard()
+  // new Card('img/tabs/vegy.jpg', 'Меню “Фитнес“', 'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!','Меню Фитнес', 6, '.menu .container', 'menu__item').addCard()
 
   //Forms
 
@@ -211,10 +251,22 @@ window.addEventListener("DOMContentLoaded", function(){
   };
 
   forms.forEach(item => {
-    postData(item);
+    bindPostData(item);
   });
 
-  function postData(form) {
+  const postData = async (url, data) => {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: data
+    });
+
+    return await res.json();
+  }
+
+  function bindPostData(form) {
     form.addEventListener('submit', (event)=>{
       event.preventDefault();
 
@@ -228,19 +280,9 @@ window.addEventListener("DOMContentLoaded", function(){
 
       const formData = new FormData(form);
 
-      const object = {};
-      formData.forEach(function(value, key){
-        object[key] = value;
-      })
+      const json = JSON.stringify(Object.fromEntries(formData.entries()));
 
-      fetch('server.php', {
-        method: "POST",
-        headers: {
-          'Content-type': 'application/json',
-        },
-        body: JSON.stringify(object)
-      })
-      .then(data => data.text())
+      postData('http://localhost:3000/requests', json)
       .then(data => {
           console.log(data);
           showThaksModal(message.success);
@@ -305,5 +347,74 @@ window.addEventListener("DOMContentLoaded", function(){
   // }).finally(()=>{                             //Действия, которые выполняются всегда, вне зависимости от результатов выполнения запроса.
   // })
 
+  // Slider
+
+  const sliderWrapper = document.querySelector('.offer__slider'),
+        navPrev = sliderWrapper.querySelector('.offer__slider-prev'),
+        navNext = sliderWrapper.querySelector('.offer__slider-next'),
+        totalSlideNum = sliderWrapper.querySelector('#total'),
+        slide = sliderWrapper.getElementsByClassName('offer__slide');
+    let curSlideNum = sliderWrapper.querySelector('#current');
+
+  function totalSlide(){
+    if(slide.length <= 9){
+      totalSlideNum.innerHTML = `0${slide.length}`;
+    } else {
+      totalSlideNum.innerHTML = `${slide.length}`;
+    }
+  }
+  totalSlide()
+
+  function hideSlides(){
+    [...slide].forEach(el => {
+      el.style.cssText = 'display: none';
+    });
+  }
+  hideSlides()
+
+  let ind = 0;
+
+  function showSlide(ind){
+    slide[ind].style.cssText = 'display: block';
+    slide[ind].classList.add('fade')
+  }
+  showSlide(ind)
+
+  navNext.addEventListener('click', () => {
+    hideSlides()
+    if(ind < (slide.length - 1)){
+      showSlide(ind += 1)
+    } else {
+      showSlide(ind = 0)
+    }
+    currentNumber(ind)
+    console.log(ind)
+  })
+  
+  navPrev.addEventListener('click', () => {
+    hideSlides()
+    if(ind > 0){
+      showSlide(ind -= 1)
+    } else {
+      showSlide(ind = (slide.length-1))
+    }
+    currentNumber(ind)
+    console.log(ind)
+  })
+
+  function currentNumber(ind){
+    if(ind <=9){
+      curSlideNum.innerHTML = `0${ind+1}`;
+    } else {
+      curSlideNum.innerHTML = `${ind+1}`;
+    }
+  }
+  currentNumber(ind);
+
+
+
+  fetch('http://localhost:3000/menu')
+    .then(data => data.json())
+    .then(res => console.log(res))
 
 });
