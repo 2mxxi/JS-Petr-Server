@@ -101,52 +101,52 @@ window.addEventListener("DOMContentLoaded", function(){
 
   //Modal
 
-  const trigger = document.getElementsByClassName('open'),
-        // close = document.querySelector('.modal__close'),
-        modal = document.querySelector('.modal');
+  // const trigger = document.getElementsByClassName('open'),
+  //       // close = document.querySelector('.modal__close'),
+  //       modal = document.querySelector('.modal');
 
-  function openModal(){
-    modal.style.display = 'block';
-    modal.classList.add('fade');
-    document.body.style.overflow = 'hidden';
-    clearInterval(modalTimerId);
-  }
+  // function openModal(){
+  //   modal.style.display = 'block';
+  //   modal.classList.add('fade');
+  //   document.body.style.overflow = 'hidden';
+  //   clearInterval(modalTimerId);
+  // }
 
-  [...trigger].forEach(el => {
-    el.addEventListener('click', openModal);
-  })
+  // [...trigger].forEach(el => {
+  //   el.addEventListener('click', openModal);
+  // })
 
-  function closeModal(){
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
-  }
+  // function closeModal(){
+  //   modal.style.display = 'none';
+  //   document.body.style.overflow = '';
+  // }
 
-  modal.addEventListener('click', (event)=>{                 //Если клик по затемненноый области, закрыть окно
-    if(event.target === modal || event.target.getAttribute('data-close') == ''){
-      closeModal();
-    }
-  })
+  // modal.addEventListener('click', (event)=>{                 //Если клик по затемненноый области, закрыть окно
+  //   if(event.target === modal || event.target.getAttribute('data-close') == ''){
+  //     closeModal();
+  //   }
+  // })
 
-  document.addEventListener('keydown', (event)=>{                        //Закрытие по нажати Esc 
-    if(event.code === 'Escape' && modal.style.display === 'block'){     //Проверяем, нажат ли esc и откыто ли сейчас окно
-      closeModal()
-    }
-  })
+  // document.addEventListener('keydown', (event)=>{                        //Закрытие по нажати Esc 
+  //   if(event.code === 'Escape' && modal.style.display === 'block'){     //Проверяем, нажат ли esc и откыто ли сейчас окно
+  //     closeModal()
+  //   }
+  // })
 
-  const modalTimerId = setTimeout(openModal, 5000)
+  // const modalTimerId = setTimeout(openModal, 5000)
 
-  // window.pageYOffset + document.documentElement.clientHeight    //Высота прокрученной части и высота клиента(окна)
-  // document.documentElement.scrollHeight    //Полная высота
+  // // window.pageYOffset + document.documentElement.clientHeight    //Высота прокрученной части и высота клиента(окна)
+  // // document.documentElement.scrollHeight    //Полная высота
 
-  function shiwModalByScroll(){
-    if(window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight){
-      openModal();
-      window.removeEventListener('scroll', shiwModalByScroll);
-     }
-  }
+  // function shiwModalByScroll(){
+  //   if(window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight){
+  //     openModal();
+  //     window.removeEventListener('scroll', shiwModalByScroll);
+  //    }
+  // }
 
 
-  window.addEventListener('scroll', shiwModalByScroll);
+  // window.addEventListener('scroll', shiwModalByScroll);
 
   // Классы для карточек
 
@@ -349,72 +349,135 @@ window.addEventListener("DOMContentLoaded", function(){
 
   // Slider
 
-  const sliderWrapper = document.querySelector('.offer__slider'),
-        navPrev = sliderWrapper.querySelector('.offer__slider-prev'),
-        navNext = sliderWrapper.querySelector('.offer__slider-next'),
-        totalSlideNum = sliderWrapper.querySelector('#total'),
-        slide = sliderWrapper.getElementsByClassName('offer__slide');
-    let curSlideNum = sliderWrapper.querySelector('#current');
+  // const sliderWrapper = document.querySelector('.offer__slider'),
+  //       navPrev = sliderWrapper.querySelector('.offer__slider-prev'),
+  //       navNext = sliderWrapper.querySelector('.offer__slider-next'),
+  //       totalSlideNum = sliderWrapper.querySelector('#total'),
+  //       slide = sliderWrapper.getElementsByClassName('offer__slide');
+  //   let curSlideNum = sliderWrapper.querySelector('#current');
 
-  function totalSlide(){
-    if(slide.length <= 9){
-      totalSlideNum.innerHTML = `0${slide.length}`;
+  // function totalSlide(){
+  //   if(slide.length <= 9){
+  //     totalSlideNum.innerHTML = `0${slide.length}`;
+  //   } else {
+  //     totalSlideNum.innerHTML = `${slide.length}`;
+  //   }
+  // }
+  // totalSlide()
+
+  // function hideSlides(){
+  //   [...slide].forEach(el => {
+  //     el.style.cssText = 'display: none';
+  //   });
+  // }
+  // hideSlides()
+
+  // let ind = 0;
+
+  // function showSlide(ind){
+  //   slide[ind].style.cssText = 'display: block';
+  //   slide[ind].classList.add('fade')
+  // }
+  // showSlide(ind)
+
+  // navNext.addEventListener('click', () => {
+  //   hideSlides()
+  //   if(ind < (slide.length - 1)){
+  //     showSlide(ind += 1)
+  //   } else {
+  //     showSlide(ind = 0)
+  //   }
+  //   currentNumber(ind)
+  //   console.log(ind)
+  // })
+  
+  // navPrev.addEventListener('click', () => {
+  //   hideSlides()
+  //   if(ind > 0){
+  //     showSlide(ind -= 1)
+  //   } else {
+  //     showSlide(ind = (slide.length-1))
+  //   }
+  //   currentNumber(ind)
+  //   console.log(ind)
+  // })
+
+  // function currentNumber(ind){
+  //   if(ind <=9){
+  //     curSlideNum.innerHTML = `0${ind+1}`;
+  //   } else {
+  //     curSlideNum.innerHTML = `${ind+1}`;
+  //   }
+  // }
+  // currentNumber(ind);
+
+
+// PRO Slider (предварительно в html создается еще 1 wrapper'.offer__slider-inner' для слайдера)
+
+const slides = document.querySelectorAll('.offer__slide'),
+      prev = document.querySelector('.offer__slider-prev'),
+      next = document.querySelector('.offer__slider-next'),
+      total = document.querySelector('#total'),
+      current = document.querySelector('#current'),
+      slidesWrapper = document.querySelector('.offer__slider-wrapper'),
+      slidesField = document.querySelector('.offer__slider-inner'),
+      width = window.getComputedStyle(slidesWrapper).width;
+
+  let slideIndex = 1,
+      offset = 0;
+
+  function statusSlide(){
+    if(slides.length <= 9){
+      total.innerHTML = `0${slides.length}`;
+      current.innerHTML = `0${slideIndex}`;
     } else {
-      totalSlideNum.innerHTML = `${slide.length}`;
+      total.innerHTML = `${slides.length}`;
+      current.innerHTML = `${slideIndex}`;
     }
   }
-  totalSlide()
+    statusSlide()
 
-  function hideSlides(){
-    [...slide].forEach(el => {
-      el.style.cssText = 'display: none';
-    });
-  }
-  hideSlides()
-
-  let ind = 0;
-
-  function showSlide(ind){
-    slide[ind].style.cssText = 'display: block';
-    slide[ind].classList.add('fade')
-  }
-  showSlide(ind)
-
-  navNext.addEventListener('click', () => {
-    hideSlides()
-    if(ind < (slide.length - 1)){
-      showSlide(ind += 1)
-    } else {
-      showSlide(ind = 0)
-    }
-    currentNumber(ind)
-    console.log(ind)
+  slidesWrapper.style.overflow = 'hidden';
+  slidesField.style.width = 100 * slides.length + '%'; // ширина n раз по 100%, чтобы уместить все слайды в строку
+  slidesField.style.display = 'flex';
+  slidesField.style.transition = '0.5s all';
+  slides.forEach(slide=>{
+    slide.style.width = width
   })
   
-  navPrev.addEventListener('click', () => {
-    hideSlides()
-    if(ind > 0){
-      showSlide(ind -= 1)
+
+  next.addEventListener('click', () => {
+    if(offset == +width.slice(0, width.length - 2) * (slides.length - 1)){
+      offset = 0;
     } else {
-      showSlide(ind = (slide.length-1))
+      offset += +width.slice(0, width.length - 2)
     }
-    currentNumber(ind)
-    console.log(ind)
-  })
+    slidesField.style.transform = `translateX(-${offset}px)`;
 
-  function currentNumber(ind){
-    if(ind <=9){
-      curSlideNum.innerHTML = `0${ind+1}`;
+    if (slideIndex == slides.length) {
+      slideIndex = 1
     } else {
-      curSlideNum.innerHTML = `${ind+1}`;
+      slideIndex ++;
     }
-  }
-  currentNumber(ind);
 
+    statusSlide()
+  });
 
+  prev.addEventListener('click', () => {
+    if(offset == 0){
+      offset = +width.slice(0, width.length - 2) * (slides.length - 1)
+    } else {
+      offset -= +width.slice(0, width.length - 2)
+    }
+    slidesField.style.transform = `translateX(-${offset}px)`;
 
-  fetch('http://localhost:3000/menu')
-    .then(data => data.json())
-    .then(res => console.log(res))
+    if (slideIndex == 1) {
+      slideIndex = slides.length
+    } else {
+      slideIndex --;
+    }
+
+    statusSlide()
+  }); 
 
 });
