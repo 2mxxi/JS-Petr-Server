@@ -480,4 +480,45 @@ const slides = document.querySelectorAll('.offer__slide'),
     statusSlide()
   }); 
 
+
+  // Slider-navigation
+
+  const sliderContainer = document.querySelector('.offer__slider'),
+        navContainer = document.createElement('div'),
+        dotList = document.getElementsByClassName('dot');
+  
+  sliderContainer.style.position = 'relative';
+
+  navContainer.classList.add('nav-container');
+
+  sliderContainer.appendChild(navContainer);
+
+  navContainer.style.cssText = 'height: 30px; width: 180px; display: flex; justify-content: center; align-items: center; margin: 0 auto';
+  
+  let n = 1;
+  for (let i = 0; i < slides.length; i++) {
+    const dot = document.createElement('div');
+    dot.classList.add('dot', `${n}`);
+    navContainer.append(dot);
+    n++;
+  }
+
+  function removeActive(){
+    [...dotList].forEach(el => {
+      el.classList.remove('dot__active')
+    });
+  }
+
+  navContainer.addEventListener('click', ()=>{
+    const target = event.target;
+    if(target && target.classList.contains('dot')){
+      slidesField.style.transform = `translateX(-${+width.slice(0, width.length - 2) * (target.classList[1]-1)}px)`;
+      current.innerHTML = `0${target.classList[1]}`;
+      removeActive();
+      target.classList.add('dot__active')
+    }
+  })
+
+
 });
+
