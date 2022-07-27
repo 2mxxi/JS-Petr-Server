@@ -460,7 +460,9 @@ const slides = document.querySelectorAll('.offer__slide'),
       slideIndex ++;
     }
 
-    statusSlide()
+    statusSlide();
+    removeActive();
+    dotList[slideIndex-1].classList.add('dot__active')
   });
 
   prev.addEventListener('click', () => {
@@ -477,8 +479,10 @@ const slides = document.querySelectorAll('.offer__slide'),
       slideIndex --;
     }
 
-    statusSlide()
-  }); 
+    statusSlide();
+    removeActive();
+    dotList[slideIndex-1].classList.add('dot__active')
+  });
 
 
   // Slider-navigation
@@ -519,6 +523,7 @@ const slides = document.querySelectorAll('.offer__slide'),
     }
   })
 
+  dotList[slideIndex-1].classList.add('dot__active')
 
 });
 
