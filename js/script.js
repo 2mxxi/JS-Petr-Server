@@ -447,10 +447,10 @@ const slides = document.querySelectorAll('.offer__slide'),
   
 
   next.addEventListener('click', () => {
-    if(offset == +width.slice(0, width.length - 2) * (slides.length - 1)){
+    if(offset == +width.replace(/\D/g,'') * (slides.length - 1)){
       offset = 0;
     } else {
-      offset += +width.slice(0, width.length - 2)
+      offset += +width.replace(/\D/g,'')
     }
     slidesField.style.transform = `translateX(-${offset}px)`;
 
@@ -467,9 +467,9 @@ const slides = document.querySelectorAll('.offer__slide'),
 
   prev.addEventListener('click', () => {
     if(offset == 0){
-      offset = +width.slice(0, width.length - 2) * (slides.length - 1)
+      offset = +width.replace(/\D/g,'') * (slides.length - 1)
     } else {
-      offset -= +width.slice(0, width.length - 2)
+      offset -= +width.replace(/\D/g,'')
     }
     slidesField.style.transform = `translateX(-${offset}px)`;
 
@@ -516,7 +516,7 @@ const slides = document.querySelectorAll('.offer__slide'),
   navContainer.addEventListener('click', ()=>{
     const target = event.target;
     if(target && target.classList.contains('dot')){
-      slidesField.style.transform = `translateX(-${+width.slice(0, width.length - 2) * (target.classList[1]-1)}px)`;
+      slidesField.style.transform = `translateX(-${+width.replace(/\D/g,'') * (target.classList[1]-1)}px)`;
       current.innerHTML = `0${target.classList[1]}`;
       removeActive();
       target.classList.add('dot__active')
